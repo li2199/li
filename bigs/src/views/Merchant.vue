@@ -31,27 +31,7 @@
         <input type="text" placeholder="商户招牌上的名称，长度1-50位"  v-model="name" />
       </div>
       <p class="hr"></p>
-      <!-- <div class="nav3">
-        <p class="p5">商户类型(必填)</p>
-        <p class="one">成功添加指定类型商户最高可获得<span>50积分</span></p>
-        <van-field
-          v-model="fieldValue"
-          is-link
-          readonly
-          label=""
-          placeholder="请选择最贴近商户经营范围的类型"
-          @click="show = true"
-        />
-        <van-popup v-model="show" round position="bottom">
-          <van-cascader
-            v-model="cascaderValue"
-            title="选择商户类型"
-            :options="options"
-            @close="show = false"
-            @finish="onFinish"
-          />
-        </van-popup>
-      </div>-->
+
       <p class="hr"></p> 
       <p class="city">选择城市</p>
       <select v-model="city" @change="checkcity(city)" >
@@ -69,14 +49,7 @@
         <input type="tel" placeholder="手机号/座机号" maxlength="11" v-model="tel" />
       </div>
       <p class="hr"></p>
-      <!-- <div class="nav4">
-        <p class="two">营业状态（必填）</p>
-        <van-radio-group v-model="radio" checked-color="#ee0a24" direction="horizontal" :value='choose'>
-          <van-radio name="1">正在营业</van-radio>
-          <van-radio name="2">尚未营业</van-radio>
-          <van-radio name="3">暂停营业</van-radio>
-        </van-radio-group>
-      </div> -->
+     
       <div class="nav5">
           <p class="third" @click="addstore">提交</p>
       </div>
@@ -95,6 +68,7 @@ export default {
       choose:'',
       city:"西安",
       citys:'',
+      cityid:"2",
       tel:"",
       showPicker: false,
       checked: true,
@@ -131,24 +105,38 @@ export default {
        
 },
 checkcity(city){
-  this.city=city
+  this.city=city;
+  
+  this.citys.forEach(i => {
+    if(i.city==city){
+      this.cityid=i.cityid
+    }
+    
+  });
+  console.log(this.cityid)
 },
   addstore(){
+    
     if(this.imgs.length!=0){
        axios({
-        url:"http://10.12.151.28//shops/saveShop",
+        url:"http://localhost:9000/addshop",
         method:"post",
         data:{
           sname:this.name,
           address:this.address,
           city:this.city,
           tel:this.tel,
-          img:this.imgs
+          img:this.imgs,
+          cityid:this.cityid,
+          status:'notreviewed'
+
         }
 					}           
         )
         .then(res=>{
-          if(res.data.msg=='success'&&res.data.code=='200'){
+          console.log(res)
+          if(res.data.status=="success"){
+            alert('添加成功！请等待审核')
               this.$router.push('/')
           }
         })
@@ -166,15 +154,15 @@ checkcity(city){
       theme: 'round-button',
     }),
     axios({
-        url:"http://10.12.151.28//city/findAll",
+        url:"http://localhost:9000/cityid?cityid=All",
         method:"get",
 					}           
         )
         .then(res=>{
         
-          if(res.data.msg=='success'&&res.data.code=='200'){
-              this.citys=res.data.data;
-              console.log(this.citys)
+          if(res.statusText=='OK'&&res.status=='200'){
+              this.citys=res.data
+              
           }
         })
        

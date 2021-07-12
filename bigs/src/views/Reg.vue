@@ -9,7 +9,7 @@
       <div class="phone">
         手机号:
         <!-- <select name="" id=""><option value="+86"></option></select>  -->
-        <input class="number" type="text" @blur="phone" v-model="usertel" />
+        <input class="number" type="tel" @blur="phone" v-model="usertel" maxlength="11" />
         <input
           class="mes"
           type="button"
@@ -20,7 +20,7 @@
       </div>
       <h5 id="phonemeg">{{ phonemeg }}</h5>
       <div class="Yanzheng">
-        验证码:<input type="text" placeholder="" id="yz" v-model="code" /><span v-text="codes"></span>
+        验证码:<input type="tel" placeholder="" id="yz" v-model="code" maxlength="6" /><span v-text="codes"></span>
         <h5>{{ codemeg }}</h5>
       </div>
       <div class="username">
@@ -85,7 +85,7 @@ export default {
       namemeg: "*必填，4-10位字母，数字结合，不能以数字开头",
       userpassword: "",
       passmeg: "*必填，6-16位字母，数字结合，不能以数字开头",
-      agree: "true",
+      agree: false,
       suremeg: "",
       arr: [],
       keyword:21992199
@@ -191,7 +191,7 @@ export default {
         this.namemeg = "会员名不能为空";
       } else if (!this.userpassword) {
         this.passmeg = "密码不能为空";
-      } else if (this.agree == false) {
+      } else if (!this.agree) {
         this.suremeg = "请阅读并以下同意协议";
       } else {
         for (var i in this.arr) {

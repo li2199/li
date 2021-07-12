@@ -114,7 +114,7 @@ export default {
           this.red=true
           
        axios({
-            url:"http://10.12.151.28//collectShops/insertShops",
+            url:"http://localhost:9000/collectShops/insertShops",
             method:"post",
             data:{
                 "csid": this.data.shops.cityid,
@@ -152,7 +152,7 @@ export default {
     send(){
       this.show='show';
       axios({
-      url: "http://10.12.151.28//comments/addCom",
+      url: "http://localhost:9000/comments/addCom",
       method: "get",
       
       data:{
@@ -170,7 +170,7 @@ export default {
   },
   created() {
     axios({
-      url: "http://10.12.151.28//notes/selectNoteDTO/"+this.$route.query.nid,
+      url: "http://localhost:9000/notes/selectNoteDTO/"+this.$route.query.nid,
       method: "get",
       }).then((res) => {
       this.data = res.data.data;

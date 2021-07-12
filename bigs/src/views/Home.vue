@@ -3,7 +3,7 @@
     <div class="top">
       <div class="city">
          <select v-model="val" @change="checkcity()">
-          <option v-for="(value) in citys"  v-text="value" ></option>
+          <option v-for="(value) in citys"  v-text="value.city" ></option>
         </select>
       </div>
       <div class="sech"><input type="search" placeholder="全城按摩" /></div>
@@ -59,11 +59,11 @@ export default {
     };
   },
   created(){
-    get("http://10.12.151.28//city/findAll").then(res=> {this.citys=res.data});
-    get("https://www.fastmock.site/mock/740291a5ced1904236693a22a36d305c/home/hots").then(res=> this.hot=res)
-    get("https://www.fastmock.site/mock/740291a5ced1904236693a22a36d305c/home/menu").then(res=>this.somes= res);
-    get("http://10.12.151.28//FirstPage/selectAll/2").then(res=> this.shows=res.date) 
-     get("https://www.fastmock.site/mock/740291a5ced1904236693a22a36d305c/home/hot").then(res=> this.hots=res)  
+    get("http://localhost:9000/cityid?cityid=All").then(res=> {this.citys=res});
+    get("http://localhost:9000/hots?hots=All").then(res=> this.hot=res)
+    get("http://localhost:9000/meun").then(res=>this.somes= res);
+    axios.post("http://localhost:9000/gettitle",{cityid:2}).then(res=> {this.shows=res.data;console.log(this.shows)}) 
+     get("http://localhost:9000/hots").then(res=> this.hots=res)  
   },
   methods: {
  showadd() {
@@ -71,7 +71,7 @@ export default {
     },
     titleHadle(value) {
       console.log(value);
-      this.$refs.shows.changeData();
+      // this.$refs.shows.changeData();
     },
     checkcity(){
           for(let i in this.citys){
@@ -79,11 +79,15 @@ export default {
              this.id= this.citys[i].cityid           
            }
          };
-         let n="http://10.12.151.28//FirstPage/selectAll/"+this.id;
-         get(n).then(res=> this.shows=res.date)
+         let n="http://localhost:9000/gettitle"
+       axios.post(n,{cityid:this.id}).then(res=> {this.shows=res.data;
+       console.log(res)})
     },
     fn(){
       this.$router.push('Merchant')
+    },
+    to(){
+      
     }
     
 }}

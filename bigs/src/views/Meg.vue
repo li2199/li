@@ -33,13 +33,14 @@ export default {
     },
     created(){
         axios({
-            url:"http://10.12.151.28//message/myMsgRead/",
+            url:"http://localhost:9000/meg",
             method:"get",
             params:{
                 uid:1,
                 status:0
             }
-        }).then(res=>this.data=res.data.data)
+        }).then(res=>{this.data=res.data;
+       })
     },
     methods:{
         no(){
@@ -51,19 +52,21 @@ export default {
         },
         yes(){ 
             axios({
-            url:"http://10.12.151.28/message/myMsgRead/",
+            url:"http://localhost:9000/meg",
             method:"get",
             params:{
                 uid:1,
                 status:1
             }
         }).then(res=>{
-             if (res.data.msg == "success" && res.data.code == "200"){
+            
+             if (res.statusText == "OK" && res.status == "200"){
+              console.log(res.data)    
             this.shows=true;
             this.show=false;
             this.clas='green';
             this.cla='wit';
-            this.datas=res.data.data
+            this.datas=res.data
              }
             
             })

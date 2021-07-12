@@ -6,7 +6,7 @@ module.exports = function(req,res){
           if (err) {
             console.log(err);
         } else {
-            let arr = data.split(',\n');
+            let arr = data.split('\n');
             let result = [];
             arr.forEach(item => {
                 if (item) {

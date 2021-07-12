@@ -1,6 +1,6 @@
 // import {get} from "@/Api/api";
 // export function  send() {
-//     let n = "http://10.12.151.28//users/sendnum/"+ this.$route.query.num;
+//     let n = "http://localhost:9000/users/sendnum/"+ this.$route.query.num;
 //    get(n).then((res) => {
 //       if (res.data.msg == "success" && res.data.code == "200") {
 //         this.change = true;
@@ -19,7 +19,7 @@
 //   export function login() {
 //     console.log(this.$route.query.num);
 //     if(this.code.length==6){
-//         get("http://10.12.151.28//users/login",{
+//         get("http://localhost:9000/users/login",{
 //         tel: this.$route.query.num,
 //         code: this.code,
 //       }).then((res) => {

@@ -26,7 +26,7 @@ methods:{
 },
 created(){
    axios({
-        url:"http://10.12.151.28//city/findAll",
+        url:"http://localhost:9000/city/findAll",
         method:"get",
 					}           
         )

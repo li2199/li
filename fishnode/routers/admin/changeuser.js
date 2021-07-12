@@ -1,8 +1,7 @@
 const fs = require("fs");
 module.exports = function(req,res){
-    
+ 
         if(req){
-            let obj=req.body.usertel;
             fs.readFile('./data/users.txt','utf-8',function (err, data){
               if (err) {
                 console.log(err);
@@ -14,12 +13,15 @@ module.exports = function(req,res){
                         result.push(JSON.parse(item))
                     }
                 })
-            if( result.some(i=>i.usertel==obj)){
-                res.json({status:'err'})
-            }else{
-                res.json({status:'success'})
-            } 
+               
+                res.json(result)  
             }
-            })            
-        }
+            })
+        
+                       
+        }else{
+            res.json({
+                status: "fail"
+            }) 
+        } 
       }

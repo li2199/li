@@ -1,173 +1,192 @@
 <template>
-  <div class="box">
-    <Back :sty="stys"  />
-    <div class="name">验证码登录</div>
-    <p class="p1">您输入的号码是{{ this.$route.query.id }}</p>
-    <div class="middle">
-      <input type="text" v-model="code" class="show" placeholder="验证码" />
-      <input
-        type="button"
-        :value="str"
-        @click="send()"
-        class="send"
-        :disabled="change"
-      />
+  <div>
+    <div class="head">
+      <Back/>
     </div>
-    <div class="line"></div>
-    <div class="wenti">
-      <a href="">密码登录</a>
-      <a href="">收不到验证码？获取语音验证码</a>
+    <div class="box">
+      <div class="username">
+        用户名:
+        <input type="text" @blur="name" v-model="username" />
+      </div>
+      <h5 id="usermeg">{{ namemeg }}</h5>
+      <div class="password">
+        <input
+          class="number"
+          type="password"
+          value=""
+          placeholder="请输入密码"
+          v-model="userpassword"
+        />
+        <p>忘记密码</p>
+      </div>
+      <h5 id="usermeg">{{ passmeg }}</h5>
+
+      <div class="sure" @click="sure">登录</div>
+      <h5 id="usermeg" style="text-align: center; color: red">{{ suremeg }}</h5>
+      <p class="mes" >短信验证码登录</p>
+      
+      <div class="agree">
+        <input type="checkbox" name="" id=""  v-model="agree">
+        &nbsp;&nbsp;<span>您已阅读并同意《闲鱼社区用户服务协议》《隐私权政策</span>》
+      </div>
     </div>
-    <input class="input1" type="button" value="下一步" @click="login()" />
   </div>
 </template>
-<script>
-import Back from "@/components/Back";
-import {get} from "@/Api/api";
-export default {
-  name: "Login",
-  components: {
-    Back,
-  },
-  data(){
-    return {
-      code: "",
-      str: "发送验证码",
-      change: false,
-      imgsty:{
-          width: "80%",
-          height: "100%",
-        },
-         stys:{
-         width: "0.25rem",
-          height: "0.25rem",
-          margin: "0.15rem 0 0.2rem 0.2rem",
-        }
 
+<script>
+import axios from "axios";
+import Back from "@/components/Back";
+import encrypt from "@/tool/tool";
+export default {
+  name: "Reg",
+  components: {Back},
+  data() {
+    return {
+      username: "",
+      namemeg: "",
+      userpassword: "",
+      passmeg: "",
+      suremeg: "",
+      agree:false,
+      keyword:21992199
     };
   },
   methods: {
-    send() {
-    let n = "http://10.12.151.28//users/sendnum/"+ this.$route.query.num;
-   get(n).then((res) => {
-      if (res.msg == "success" && res.code == "200") {
-        this.change = true;
-        this.str = 60;
-        let timer = setInterval(() => {
-          this.str--;
-          if (this.str == 0) {
-            clearInterval(timer);
-            this.change = false;
-            this.str = "重新发送";
+   
+    name() {
+      axios.post("http://localhost:9000/testlogin",{username:this.username}).then((res) => {
+        
+        if (res.data.status == 'success') {
+          this.namemeg = "请输入密码";
+        } else {
+          this.namemeg = "用户未注册，请注册";
+        }
+      });
+    },
+    sure() {
+      if (!this.username) {
+        this.namemeg = "用户名不能为空";
+      } else if (!this.userpassword) {
+        this.passmeg = "密码不能为空";
+      }else if (!this.agree) {
+        this.suremeg = "请阅读并以下同意协议";
+      } else {
+        axios.post("http://localhost:9000/userlogin",{
+        userpassword:encrypt.encrypt(this.userpassword, this.keyword),
+        username:this.username}
+        ).then((res) => {
+          console.log(res.data);
+          if (res.data.status =='success') {
+           sessionStorage.setItem("user",this.username);
+           
+            this.suremeg = "登录成功";
+            this.$router.push("/My");
+          
+          } else {
+            this.suremeg = "用户名或密码错误";
           }
-        }, 1000);
-      }
-    });
-  },
-  login() {
-    console.log(this.$route.query.num);
-    if(this.code.length==6){
-        get("http://10.12.151.28//users/login",{
-        tel: this.$route.query.num,
-        code: this.code,
-      }).then((res) => {
-      if (res.msg == "success" && res.code == "200") {
-        sessionStorage.setItem("user", this.$route.query.num);
-        this.$router.push({
-          path: "/My",
-          query: { num: this.$route.query.num },
         });
       }
-    });
-    }else{
-      alert('验证码为6位')
-    }
     },
-}
-}
+  },
+};
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .box {
-  width: 90%;
-  height: 6.2rem;
-}
-
-.name {
-  width: 80%;
-  height: 0.2rem;
+  width: 3.4rem;
   margin: auto;
-  text-align: left;
-  font-weight: bold;
 }
-
-.middle {
-  width: 70%;
-  margin: 0.2rem auto;
+.head {
+  width: 100%;
   height: 0.4rem;
-  display: flex;
-  justify-content: space-between;
+  background-color: white;
+  position: fixed;
+  top: 0;
 }
-
-.line {
-  width: 80%;
+.more {
+  width: 3.4rem;
   margin: auto;
-  border-bottom: 1px solid gainsboro;
-}
-
-.left {
-  width: 0.75rem;
-  height: 0.3rem;
-  margin-left: 0.2rem;
-  float: left;
-}
-
-.wenti {
-  width: 80%;
-  height: 0.3rem;
-  margin-top: 0.1rem;
   display: flex;
+   padding-top: .1rem;
   justify-content: space-between;
+  font-size: 0.16rem;
 }
-.wenti a {
-  margin-right: 0.15rem;
+.more img {
+  width: 0.18rem;
+  height: 0.18rem;
 }
-a {
-  text-decoration: none;
+.username {
+  margin: 1.8rem auto 0;
+}
+.username input {
+  height: 0.3rem;
+  border: none;
+  border-bottom: 0.01rem solid;
+  width: 2.6rem;
+}
+h5 {
   font-size: 0.12rem;
-  padding-left: 0.19rem;
-  color: rgb(187, 206, 221);
+  font-weight: normal;
+  width: 100%;
+  height: 0.16rem;
+  color: rgb(139, 139, 139);
 }
-
-.input1 {
-  display: block;
-  width: 2.34rem;
-  height: 0.39rem;
-  margin: auto;
-  border-radius: 0.5rem;
-  background-color: rgb(254, 102, 52);
-  margin-top: 0.44rem;
-  color: white;
+.password {
+  border-bottom: 0.01rem solid #f7beaa;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.6rem;
+}
+.password p {
+  font-size: 0.12rem;
+}
+.number {
+  height: 0.2rem;
   border: none;
   outline: none;
 }
-
-.p1 {
-  font-size: 0.12rem;
-  color: gray;
-
-  text-align: left;
-  width: 80%;
-  height: 0.2rem;
-  margin: 0.1rem auto;
+.sure {
+  width: 3.2rem;
+  height: 0.45rem;
+  background-color: #f9e479;
+  margin: 0.6rem auto 0;
+  border-radius: 0.2rem;
+  text-align: center;
+  line-height: 0.45rem;
+  color: #838181;
 }
-.show {
-  border: none;
-  padding-left: 0.2rem;
+.mes {
+  font-size: 12px;
+  margin-top: 0.2rem;
+  text-align: center;
 }
-.send {
-  background-color: whitesmoke;
-  border-radius: 0.3rem;
-  border: none;
-  width: 40%;
+.other {
+  font-size: 12px;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+.box2 {
+  width: 1.4rem;
+  height: 0.48rem;
+  margin: 0.2rem auto 0;
+  display: flex;
+  justify-content: space-between;
+}
+.box img {
+  width: 0.48rem;
+  height: 0.48rem;
+}
+.agree {
+  font-size: 12px;
+  color: #838181;
+  margin: 0.35rem auto;
+  display: flex;
+  align-items: center;
+}
+.agree input {
+  display: inline;
+  border-radius: 50%;
 }
 </style>

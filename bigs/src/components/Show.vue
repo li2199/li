@@ -2,11 +2,11 @@
   <div class="show">
     <ul>
       <li v-for="i in shows" :style="{'width':wth}" @click="to(i.nid)" >
-        <img :src="i.img" class="showimgs" />
+        <img :src="i.img[0].src" class="showimgs" />
         <span v-text="i.title"></span>
         <div class="showimg">
           <p class="headerimg"><img src="/img/02.jpg" /></p>
-          <span v-text="i.uname"></span><img src="/img/hf0.png" />
+          <span v-text="i.uid"></span><img src="/img/hf0.png" />
         </div>
       </li>
     </ul>
@@ -23,7 +23,7 @@ export default {
     },
   shows:{
     type:Array,
-    default:()=>[]
+    default:[]
   },
   },
   methods:{

@@ -24,7 +24,7 @@
     </div>
 </template>
 <script>
-import {get} from "@/Api/api";
+import {get,post} from "@/Api/api";
 export default {
     name:"Add",
      data(){
@@ -47,8 +47,8 @@ export default {
             this.$router.go(-1)
         },
         shows(){
-       get("http://10.12.151.28//city/findAll") .then(res=>{
-          this.citys=res.data;
+       get("http://localhost:9000/cityid?cityid=All") .then(res=>{
+          this.citys=res;
           this.show=true;
         } ) },
         onRead(file) {
@@ -64,8 +64,16 @@ checkcity(){
              this.id= this.citys[i].cityid  
            }
          };
-    let n="http://10.12.151.28//shops/findShopByCid/"+this.id
-     get(n).then(res=> this.stores=res.data)
+    
+    post('http://localhost:9000/getshops',{cityid:this.id}).then(res=>{
+      if(res.length==0){
+        this.stores=[{sname:'暂时没有店铺'}]
+      }else{
+        this.stores=res
+      }
+    }
+          
+    )
     },
  checkstore(){
 console.log(this.store)
@@ -73,7 +81,7 @@ console.log(this.store)
 save(status){
   if(this.imgs.length!=0){
     axios({
-      url:'http://10.12.151.28//notes/addNote',
+      url:'http://localhost:9000/addtitle',
       method:'post',
       data:{
              title:this.title,
@@ -85,7 +93,7 @@ save(status){
              cityid:this.id 
             }
     }).then(res=>{
-      if(res.data.msg == "success" && res.data.code == "200"){
+      if(res.data.status == "success"){
         status=="0"?alert('保存成功'):alert('发布成功')
         this.$router.push('/')
       }
